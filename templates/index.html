@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fc">
+  <title>Verifyly — identity check demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('home') }}" aria-label="Verifyly home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 26 7v7.1c0 6.7-4.2 11.6-10 14.4C10.2 25.7 6 20.8 6 14.1V7l10-3.5Z" stroke="currentColor" stroke-width="2"/><path d="m11.5 15.5 3 3 6-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>verifyly<span class="brand-period">.</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="demo-pill"><span class="status-dot"></span> DEMO ENVIRONMENT</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-line"></span> SIMPLE. PRIVATE. SECURE.</p>
+          <h1>Identity checks,<br><span>made simple.</span></h1>
+          <p class="hero-description">A friendly walkthrough of how an identity verification experience can work. No real identity data is needed for this demo.</p>
+          <div class="trust-note">
+            <span class="icon-circle icon-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 19 6v5c0 4.7-2.9 8.2-7 10-4.1-1.8-7-5.3-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.7"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span><strong>Your privacy comes first</strong><small>Demo input stays in your browser</small></span>
+          </div>
+        </div>
+
+        <section class="verify-card" aria-labelledby="card-title">
+          <div class="card-heading">
+            <div class="icon-circle icon-blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 16c.7-1.4 1.6-2 2.5-2s1.8.6 2.5 2M14 9h3M14 13h3M14 17h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <p class="card-kicker">GET STARTED</p>
+              <h2 id="card-title">Verify your identity</h2>
+            </div>
+          </div>
+
+          <p class="card-description">Continue through a simulated provider flow. It takes less than a minute.</p>
+
+          {% if result %}
+          <div class="flash-message" role="status">
+            <span class="flash-icon" aria-hidden="true">✓</span>
+            <span>{{ result.message }}</span>
+          </div>
+          {% endif %}
+
+          <div class="steps-list" aria-label="Demo steps">
+            <div class="step-row">
+              <span class="step-number">1</span>
+              <span class="step-text"><strong>Give consent</strong><small>You choose whether to continue</small></span>
+              <span class="step-check" aria-hidden="true">✓</span>
+            </div>
+            <div class="step-connector" aria-hidden="true"></div>
+            <div class="step-row">
+              <span class="step-number">2</span>
+              <span class="step-text"><strong>Enter demo details</strong><small>Use a fictional test value only</small></span>
+              <span class="step-check" aria-hidden="true">✓</span>
+            </div>
+            <div class="step-connector" aria-hidden="true"></div>
+            <div class="step-row">
+              <span class="step-number">3</span>
+              <span class="step-text"><strong>See a sample result</strong><small>No identity is checked</small></span>
+              <span class="step-check" aria-hidden="true">✓</span>
+            </div>
+          </div>
+
+          <div class="consent-box">
+            <form method="post" action="{{ url_for('start_authentication') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+              <label class="consent-label">
+                <input type="checkbox" name="consent" value="yes" required>
+                <span>I understand this is a <strong>simulation only</strong> and want to continue.</span>
+              </label>
+              <button class="primary-button" type="submit">
+                Continue to demo <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </div>
+
+          <p class="card-footnote"><span aria-hidden="true">🔒</span> No Aadhaar number or OTP is collected.</p>
+        </section>
+      </section>
+
+      <section class="demo-banner" aria-label="Important demo information">
+        <span class="banner-icon" aria-hidden="true">i</span>
+        <p><strong>This is a visual demo, not an Aadhaar service.</strong> It is not affiliated with UIDAI and cannot verify anyone's identity. Never enter real personal information here.</p>
+      </section>
+
+      <section class="benefits" aria-label="Demo privacy details">
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 19 6v5c0 4.7-2.9 8.2-7 10-4.1-1.8-7-5.3-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.7"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <div><h3>Privacy by design</h3><p>The demo value never leaves your browser.</p></div>
+        </article>
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 3v4m8-4v4M4 10h16m-11 4h2m3 0h2m-7 3h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </span>
+          <div><h3>One-time session</h3><p>Each demo session automatically expires.</p></div>
+        </article>
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <div><h3>Always transparent</h3><p>Every result is clearly marked as simulated.</p></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© 2026 Verifyly Demo</span>
+      <span>Built for demonstration purposes only</span>
+    </footer>
+  </div>
+</body>
+</html>

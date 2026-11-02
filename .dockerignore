@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.py[cod]
+test_*.py
+README.md
+firebase.json
+.firebaserc
+public

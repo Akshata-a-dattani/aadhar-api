@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fc">
+  <title>Demo verification — Verifyly</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('home') }}" aria-label="Verifyly home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 26 7v7.1c0 6.7-4.2 11.6-10 14.4C10.2 25.7 6 20.8 6 14.1V7l10-3.5Z" stroke="currentColor" stroke-width="2"/><path d="m11.5 15.5 3 3 6-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>verifyly<span class="brand-period">.</span></span>
+      </a>
+      <div class="topbar-right">
+        <a class="back-link" href="{{ url_for('home') }}">← Back</a>
+        <span class="demo-pill"><span class="status-dot"></span> DEMO ENVIRONMENT</span>
+      </div>
+    </header>
+
+    <main class="provider-main">
+      <nav class="progress-track" aria-label="Verification progress">
+        <span class="progress-step complete"><span>✓</span> Consent</span>
+        <span class="progress-rule active" aria-hidden="true"></span>
+        <span class="progress-step current" aria-current="step"><span>2</span> Demo check</span>
+        <span class="progress-rule" aria-hidden="true"></span>
+        <span class="progress-step"><span>3</span> Result</span>
+      </nav>
+
+      <section class="provider-card">
+        <div class="provider-card-top">
+          <div class="icon-circle icon-blue large-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 16c.7-1.4 1.6-2 2.5-2s1.8.6 2.5 2M14 9h3M14 13h3M14 17h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <span class="secure-label"><span aria-hidden="true">●</span> SECURE DEMO</span>
+        </div>
+        <p class="eyebrow"><span class="eyebrow-line"></span> IDENTITY CHECK</p>
+        <h1 class="provider-title">Let's verify<br>it's <span>you.</span></h1>
+        <p class="provider-description">Enter the fictional 12-digit value below to preview a sample verification response.</p>
+
+        <div class="demo-warning" role="note">
+          <span class="warning-symbol" aria-hidden="true">!</span>
+          <p><strong>Demo only — not Aadhaar.</strong> Never enter your actual Aadhaar number or OTP. This sample value is checked in your browser and is never sent to the server.</p>
+        </div>
+
+        <form id="demo-form" class="demo-form">
+          <label for="demo-id">Fictional 12-digit test value</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="3" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="10" r="2" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 16c.7-1.4 1.6-2 2.5-2s1.8.6 2.5 2M14 9h3M14 13h3M14 17h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </span>
+            <input id="demo-id" type="text" placeholder="000000000000" pattern="[0-9]{12}" maxlength="12" inputmode="numeric" autocomplete="off" aria-describedby="demo-hint" required>
+            <span class="input-count" id="input-count" aria-hidden="true">0 / 12</span>
+          </div>
+          <p class="field-hint" id="demo-hint">Use the fictional test value <button class="hint-button" type="button" id="fill-demo">000000000000</button></p>
+          <button class="primary-button submit-button" type="submit">Run demo check <span aria-hidden="true">→</span></button>
+        </form>
+
+        <section id="demo-result" class="result-panel" role="status" aria-live="polite" hidden>
+          <span class="result-mark" id="result-mark" aria-hidden="true"></span>
+          <div><p class="result-title" id="result-title"></p><p class="result-copy" id="result-copy"></p></div>
+        </section>
+
+        <div class="provider-divider"></div>
+        <div class="privacy-line"><span aria-hidden="true">🔒</span> Your entry stays on this device. Nothing is stored.</div>
+      </section>
+
+      <p class="provider-disclaimer">This is a user-interface demonstration. No identity data is processed, and no real authentication takes place.</p>
+
+      <form class="cancel-form" method="post" action="{{ url_for('complete_mock_verification') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="attempt_id" value="{{ attempt_id }}">
+        <input type="hidden" name="outcome" value="cancelled">
+        <button class="text-button" type="submit">Cancel and return</button>
+      </form>
+    </main>
+
+    <footer class="footer provider-footer">
+      <span>© 2026 Verifyly Demo</span>
+      <span>Demo session · Expires automatically</span>
+    </footer>
+  </div>
+
+  <script>
+    const form = document.getElementById("demo-form");
+    const demoId = document.getElementById("demo-id");
+    const count = document.getElementById("input-count");
+    const result = document.getElementById("demo-result");
+    const fillDemo = document.getElementById("fill-demo");
+
+    demoId.addEventListener("input", () => {
+      demoId.value = demoId.value.replace(/\D/g, "").slice(0, 12);
+      count.textContent = `${demoId.value.length} / 12`;
+      result.hidden = true;
+    });
+
+    fillDemo.addEventListener("click", () => {
+      demoId.value = "000000000000";
+      demoId.dispatchEvent(new Event("input"));
+      demoId.focus();
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      result.hidden = false;
+      if (demoId.value === "000000000000") {
+        result.className = "result-panel result-success";
+        document.getElementById("result-mark").textContent = "✓";
+        document.getElementById("result-title").textContent = "Demo check complete";
+        document.getElementById("result-copy").textContent = "Simulated success only. No identity was checked or authenticated.";
+      } else {
+        result.className = "result-panel result-neutral";
+        document.getElementById("result-mark").textContent = "!";
+        document.getElementById("result-title").textContent = "Demo value not recognized";
+        document.getElementById("result-copy").textContent = "Try the fictional test value 000000000000. No identity was checked.";
+      }
+    });
+  </script>
+</body>
+</html>
