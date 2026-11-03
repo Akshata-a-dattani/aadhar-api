@@ -10,7 +10,18 @@ python -m unittest -v
 python app.py
 ```
 
-Open `http://127.0.0.1:5000`. Accept the demo consent and choose either simulated provider result.
+Open `http://127.0.0.1:5000`. Accept the demo consent, type the fictional value `000000000000` (or cancel), and the server runs the simulated check described below.
+
+## What the simulated check does (`encrypt.py`)
+
+The scenario is a bank verifying a new customer. For the fictional customer, `encrypt.py` builds a request shaped like UIDAI Authentication API 2.5 (Rev 1) and sends it to a mock UIDAI in the same process:
+
+1. The PID (identity data) is encrypted with AES-256-GCM under a fresh session key; the nonce and AAD come from the timestamp.
+2. The session key is wrapped with an RSA-2048 key (RSA/ECB/PKCS1Padding).
+3. `Hmac` is the SHA-256 of the PID, encrypted with the session key.
+4. The "AUA" signs the request; the mock UIDAI checks the signature, decrypts, checks the timestamp and duplicates (errors 561, 562, 563), checks the hash (564), matches the record, and returns a signed `ret="y|n"`.
+
+All keys are generated in memory at start-up and nothing is sent to UIDAI. Simplification: the signature covers the request text directly instead of W3C XML-DSig. `python -m unittest -v` covers the tamper, replay and expiry cases.
 
 ## Connecting an authorized provider
 

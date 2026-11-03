@@ -193,3 +193,5 @@ h1, h2, h3, p { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.check-steps { margin: -4px 0 15px; padding: 0 0 0 28px; color: #3b4757; font-size: 12px; line-height: 1.7; }
