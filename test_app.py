@@ -55,6 +55,8 @@ class AuthenticationFlowTests(unittest.TestCase):
         self.assertEqual(result.status_code, 302)
         home = self.client.get("/")
         self.assertIn(b"this is not authentication", home.data)
+        self.assertIn(b"SHA-256 hash matches", home.data)
+        self.assertIn(b"UIDAI response signature verified", home.data)
 
         replay = self.client.post(
             "/mock-provider/complete",
@@ -65,6 +67,12 @@ class AuthenticationFlowTests(unittest.TestCase):
             },
         )
         self.assertEqual(replay.status_code, 410)
+
+    def test_provider_page_posts_to_server_when_test_value_matches(self):
+        start = self._start()
+        provider_page = self.client.get(start.headers["Location"])
+        self.assertIn(b'id="complete-form"', provider_page.data)
+        self.assertIn(b'name="outcome" value="verified"', provider_page.data)
 
     def test_rejects_unexpected_outcome(self):
         start = self._start()

@@ -46,13 +46,18 @@
             </div>
           </div>
 
-          <p class="card-description">Continue through a simulated provider flow. It takes less than a minute.</p>
+          <p class="card-description">Scenario: a bank is verifying a new customer before opening an account. Continue through a simulated provider flow.</p>
 
           {% if result %}
           <div class="flash-message" role="status">
             <span class="flash-icon" aria-hidden="true">✓</span>
             <span>{{ result.message }}</span>
           </div>
+          {% if result.steps %}
+          <ol class="check-steps" aria-label="Steps the mock UIDAI completed">
+            {% for step in result.steps %}<li>{{ step }}</li>{% endfor %}
+          </ol>
+          {% endif %}
           {% endif %}
 
           <div class="steps-list" aria-label="Demo steps">
@@ -70,7 +75,7 @@
             <div class="step-connector" aria-hidden="true"></div>
             <div class="step-row">
               <span class="step-number">3</span>
-              <span class="step-text"><strong>See a sample result</strong><small>No identity is checked</small></span>
+              <span class="step-text"><strong>See the signed yes or no</strong><small>Each step is listed; no real identity is checked</small></span>
               <span class="step-check" aria-hidden="true">✓</span>
             </div>
           </div>

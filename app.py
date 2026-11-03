@@ -4,6 +4,8 @@ import time
 
 from flask import Flask, abort, redirect, render_template, request, session, url_for
 
+from encrypt import run_demo_check
+
 
 app = Flask(__name__)
 app.config.update(
@@ -106,15 +108,29 @@ def complete_mock_verification():
 
     session.pop("attempt_id", None)
     session.pop("attempt_expires_at", None)
-    session["demo_result"] = {
-        "verified": outcome == "verified",
-        "message": (
-            "Mock verification completed. No Aadhaar identity was checked; "
-            "this is not authentication."
-            if outcome == "verified"
-            else "The mock verification was cancelled."
-        ),
-    }
+
+    if outcome == "verified":
+        # The browser only says "run the check". The result comes from the
+        # server-side simulation, never from a browser-supplied success flag.
+        check = run_demo_check()
+        passed = check["ret"] == "y" and check["response_verified"]
+        steps = check["steps"] + (["UIDAI response signature verified"] if check["response_verified"] else [])
+        session["demo_result"] = {
+            "verified": passed,
+            "steps": steps,
+            "message": (
+                "Bank check passed (ret=y). Every step ran on fictional data and keys; "
+                "no Aadhaar identity was checked and this is not authentication."
+                if passed
+                else f"Bank check failed (ret=n, err={check['err']}). This is a simulation."
+            ),
+        }
+    else:
+        session["demo_result"] = {
+            "verified": False,
+            "steps": [],
+            "message": "The mock verification was cancelled.",
+        }
     return redirect(url_for("home"))
 
 
